@@ -4,9 +4,9 @@ This repository contains the Python code and datasets used for palaeoenvironment
 
 ## Palaeoenvironment
 
-The `paleoenvironment/` directory contains the palaeoclimate and biome datasets used in the habitat-suitability analyses.
+The `paleoenvironment/` directory contains palaeoclimate model datasets for 15 independent climate-state simulations and the corresponding global biome datasets used in this study.
 
-The palaeoclimate datasets represent 15 independent climate-state simulations from the Pliocene Modelling Intercomparison Project and include temperature and precipitation variables. The corresponding global biome datasets were generated with BIOME4.
+The palaeoclimate datasets include temperature and precipitation variables from the Pliocene Modelling Intercomparison Project simulations. The corresponding global biome distributions were generated using the BIOME4 equilibrium global vegetation model, using the implementation available at [jedokaplan/BIOME4](https://github.com/jedokaplan/BIOME4), with the palaeoclimate model data as climatic inputs.
 
 ### Repository structure
 
@@ -18,18 +18,42 @@ paleoenvironment/
     └── biome_<model_code>.nc
 ```
 
-Each palaeoclimate dataset has a corresponding BIOME4 biome dataset identified by the same model code.
+Each palaeoclimate dataset and its corresponding BIOME4 biome dataset are identified by the same model code.
+
+### Palaeoclimate simulations
+
+| Scenario | Model code | Climate state | Experimental settings |
+|---:|:---:|---|---|
+| 1 | `xozzc` | Pliocene – Warm summer orbit | 400 ppm CO₂ / Warm summer orbit |
+| 2 | `xozzb` | Pliocene – Standard | 400 ppm CO₂ / Modern orbit |
+| 3 | `xozzf` | Pliocene – Warm winter orbit | 400 ppm CO₂ / Warm winter orbit |
+| 4 | `tenvl` | Pliocene – High CO₂ | 450 ppm CO₂ / Modern orbit |
+| 5 | `tenvk` | Pliocene – Low CO₂ | 350 ppm CO₂ / Modern orbit |
+| 6 | `tenvm` | Pliocene – PI CO₂ | 280 ppm CO₂ / Modern orbit |
+| 7 | `tdlvb` | Early Pleistocene Glacial – PI CO₂ | 280 ppm CO₂ / M2 orbit / Medium ice |
+| 8 | `tdlvd1` | Early Pleistocene Glacial – PI CO₂ | 280 ppm CO₂ / M2 orbit / Large ice |
+| 9 | `tdlvc` | Early Pleistocene Glacial – Low CO₂ | 220 ppm CO₂ / M2 orbit / Medium ice |
+| 10 | `tdlve` | Early Pleistocene Glacial – Low CO₂ | 220 ppm CO₂ / M2 orbit / Large ice |
+| 11 | `xqlne` | Early Pleistocene Glacial – Low CO₂ | 220 ppm CO₂ / Modern orbit / Medium ice |
+| 12 | `xqlnf` | Early Pleistocene Glacial – Low CO₂ | 220 ppm CO₂ / Orbit with low NHSI / Medium ice |
+| 13 | `xnzib` | Late Pleistocene Glacial | 180 ppm CO₂ / LGM orbit / Standard ice |
+| 14 | `xnziw` | Late Pleistocene Glacial | 180 ppm CO₂ / LGM orbit / Medium ice |
+| 15 | `xnzix` | Late Pleistocene Glacial | 180 ppm CO₂ / LGM orbit / Large ice |
+
+These model codes are also used for the corresponding environmental predictors and MaxEnt palaeoclimate projections in `habitat_suitability/`.
 
 ## Habitat suitability
 
-The `habitat_suitability/` directory contains the data and Python workflow used to model the potential habitat suitability of the woolly rhinoceros (*Coelodonta antiquitatis*) across 15 Pliocene-like and Pleistocene-like palaeoclimate simulations using temperature, precipitation, and biome predictors.
+The `habitat_suitability/` directory contains the data and Python workflow used to model the potential habitat suitability of the woolly rhinoceros (*Coelodonta antiquitatis*) across the 15 palaeoclimate simulations using temperature, precipitation, and biome predictors.
+
+The final MaxEnt predictors are annual mean temperature, annual total precipitation, and biome. The `xnzib` Late Pleistocene glacial simulation is used as the training climate, and additional temperature and precipitation variables for `xnzib` are included for predictor-correlation analysis.
 
 ### Requirements
 
 - ArcGIS Pro with ArcPy and a valid Spatial Analyst licence
 - Java
 - Jupyter Notebook or JupyterLab using the ArcGIS Pro Python environment
-- NumPy, pandas, Matplotlib, and openpyxl
+- NumPy, pandas, Matplotlib, xlrd, and openpyxl
 
 The included `maxent.jar` is MaxEnt 3.4.4, distributed under the MIT License. See the [official MaxEnt repository](https://github.com/mrmaxent/Maxent) for its licence and third-party licence information.
 
@@ -40,21 +64,32 @@ habitat_suitability/
 ├── MaxEnt_Modeling.ipynb
 ├── maxent.jar
 └── data/
-    ├── fossils/Fossils.xls
-    ├── aoi/Eurasia.*
+    ├── fossils/
+    │   └── Fossils.xls
+    ├── aoi/
+    │   └── Eurasia.*
     ├── study_regions/
+    │   ├── JunggarBasin.*
+    │   ├── LoessPlateau.*
+    │   └── TibetanPlateau.*
     └── paleoenvironment/
-        ├── model_predictors/
-        └── predictor_selection/
+        ├── biome/
+        │   └── biome_<model_code>.tif
+        ├── temperature/
+        │   ├── temp_annual_mean_<model_code>.tif
+        │   └── temp_<additional_stat>_xnzib.tif
+        └── precipitation/
+            ├── precip_annual_total_<model_code>.tif
+            └── precip_<additional_stat>_xnzib.tif
 ```
 
 ### Running the notebook
 
-Open `habitat_suitability/MaxEnt_Modeling.ipynb`, select the ArcGIS Pro Python kernel, and run all cells in order.
+Open `habitat_suitability/MaxEnt_Modeling.ipynb`, select the ArcGIS Pro Python kernel, and run **Configuration and common setup** first. Each subsequent major analysis section can then be rerun independently using the configured variables and existing files on disk.
 
 ### Outputs
 
-Outputs are written to:
+Running the workflow generates outputs locally under:
 
 ```text
 habitat_suitability/output/
@@ -66,6 +101,8 @@ habitat_suitability/output/
         ├── Stats/                Summary tables and figures
         └── Tuning_CV_3fold/      Parameter-tuning runs
 ```
+
+The `output/` directory is excluded from the GitHub repository.
 
 ## Reconstructing δ¹⁸Owater (VSMOW)
 
@@ -98,3 +135,5 @@ The original analysis code authored for this repository is released under the Ap
 The input datasets remain subject to the licences and terms specified by their respective original providers.
 
 The included `maxent.jar` remains subject to the MaxEnt licence and any applicable third-party licences. Please cite MaxEnt when using this workflow.
+
+BIOME4 is used through the implementation available at [jedokaplan/BIOME4](https://github.com/jedokaplan/BIOME4); users should follow the licence and citation information provided by that repository when using the biome datasets or reproducing the BIOME4 workflow.
