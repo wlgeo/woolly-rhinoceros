@@ -55,8 +55,6 @@ The final MaxEnt predictors are annual mean temperature, annual total precipitat
 - Jupyter Notebook or JupyterLab using the ArcGIS Pro Python environment
 - NumPy, pandas, Matplotlib, xlrd, and openpyxl
 
-The included `maxent.jar` is MaxEnt 3.4.4, distributed under the MIT License. See the [official MaxEnt repository](https://github.com/mrmaxent/Maxent) for its licence and third-party licence information.
-
 ### Repository structure
 
 ```text
@@ -85,11 +83,11 @@ habitat_suitability/
 
 ### Running the notebook
 
-Open `habitat_suitability/MaxEnt_Modeling.ipynb`, select the ArcGIS Pro Python kernel, and run **Configuration and common setup** first. Each subsequent major analysis section can then be rerun independently using the configured variables and existing files on disk.
+Open `habitat_suitability/MaxEnt_Modeling.ipynb`, select the ArcGIS Pro Python kernel, and run all cells in order.
 
 ### Outputs
 
-Running the workflow generates outputs locally under:
+Outputs are written to:
 
 ```text
 habitat_suitability/output/
@@ -101,8 +99,6 @@ habitat_suitability/output/
         ├── Stats/                Summary tables and figures
         └── Tuning_CV_3fold/      Parameter-tuning runs
 ```
-
-The `output/` directory is excluded from the GitHub repository.
 
 ## Reconstructing δ¹⁸Owater (VSMOW)
 
@@ -134,6 +130,6 @@ The original analysis code authored for this repository is released under the Ap
 
 The input datasets remain subject to the licences and terms specified by their respective original providers.
 
-The included `maxent.jar` remains subject to the MaxEnt licence and any applicable third-party licences. Please cite MaxEnt when using this workflow.
+BIOME4 is used through the implementation available at [jedokaplan/BIOME4](https://github.com/jedokaplan/BIOME4).
 
-BIOME4 is used through the implementation available at [jedokaplan/BIOME4](https://github.com/jedokaplan/BIOME4); users should follow the licence and citation information provided by that repository when using the biome datasets or reproducing the BIOME4 workflow.
+The included `maxent.jar` is MaxEnt 3.4.4 and remains subject to the MaxEnt licence and any applicable third-party licences. Please cite MaxEnt when using this workflow.
